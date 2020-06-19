@@ -1,0 +1,16 @@
+﻿<Window x:Class="SWISDR.Windows.TrainNumber"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SWISDR.Windows"
+        mc:Ignorable="d"
+        Title="Podaj numer pociągu" Height="100" Width="329"
+        Activated="Window_Activated">
+    <StackPanel Orientation="Horizontal">
+        <Label x:Name="NumberLabel" Content="Numer:" Width="60" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"/>
+        <TextBox x:Name="NumberTxtBox" KeyUp="NumberTxtBox_KeyUp" VerticalAlignment="Center" Text="" Margin="10,0,0,0" VerticalContentAlignment="Center" Width="81" Height="30" FontSize="16"/>
+        <Button Name="OkBtn" Width="60" Height="30" Margin="10,0,0,0" FontSize="16" Click="OkBtn_Click">OK</Button>
+        <Button Name="CancelBtn" Width="60" Height="30" Margin="10,0,0,0" FontSize="16" Click="CancelBtn_Click">Anuluj</Button>
+    </StackPanel>
+</Window>

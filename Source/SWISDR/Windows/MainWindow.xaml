@@ -1,0 +1,132 @@
+﻿<Window x:Class="SWISDR.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SWISDR.Windows"
+        xmlns:conv="clr-namespace:SWISDR.ValueConverters"
+        mc:Ignorable="d"
+        Title="SWISDR" Height="600" Width="1200"
+        Loaded="Window_Loaded"
+        KeyDown="Window_KeyDown">
+    <Window.Resources>
+        <Style  TargetType="DataGridCell"  BasedOn="{StaticResource {x:Type DataGridCell}}">
+            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+            <!--<Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsReadOnly" Value="False" />
+                        <Condition Property="IsMouseOver" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsEditing" Value="True" />
+                </MultiTrigger>
+            </Style.Triggers>-->
+            <!--<Style.Triggers>
+                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Value="{x:Null}">
+                    <Setter Property="Background" Value="DarkGray" />
+                </DataTrigger>
+            </Style.Triggers>-->
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="ControlRow" MaxHeight="100" Height="60"/>
+            <RowDefinition Name="GridRow" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Name="AddTrainBtn" Margin="10" Padding="6" FontSize="16" Click="AddTrainBtn_Click">Dodaj pociąg</Button>
+            <Button Name="LoadStateBtn" Margin="10" Padding="6" FontSize="16" Click="LoadStateBtn_Click">Wczytaj stan</Button>
+            <Button Name="SaveStateBtn" Margin="10" Padding="6" FontSize="16" Click="SaveStateBtn_Click">Zapisz stan</Button>
+        </StackPanel>
+        <DataGrid Grid.Row="1" Name="EntriesGrid" AutoGenerateColumns="False" FontSize="16" MinColumnWidth="60" ItemsSource="{Binding Entries}"
+                  CanUserSortColumns="False" CanUserDeleteRows="False" CellEditEnding="EntriesGrid_CellEditEnding" SelectionUnit="Cell">
+            <DataGrid.Resources>
+                <conv:IsNullConverter x:Key="isNullConverter"/>
+                <conv:TimespanConverter x:Key="timespanConverter" />
+            </DataGrid.Resources>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Numer" Binding="{Binding Number}" IsReadOnly="True" MinWidth="90"/>
+                <DataGridTextColumn Header="Kierunek z" Binding="{Binding From}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Kierunek do" Binding="{Binding To}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Kat." Binding="{Binding Category}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Przyjazd" Binding="{Binding Arrival, StringFormat=hh\\:mm, TargetNullValue='-----'}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Przyj. rzecz." Binding="{Binding RealArrival, Converter={StaticResource timespanConverter}}" IsReadOnly="{Binding TrainToRun}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding StartsHere}" Value="True">
+                                    <Setter Property="Background" Value="DarkGray"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Odjazd" Binding="{Binding Departure, StringFormat=hh\\:mm, TargetNullValue='-----'}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Odj. rzecz." Binding="{Binding RealDeparture, Converter={StaticResource timespanConverter}}">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding EndsHere}" Value="True">
+                                    <Setter Property="Background" Value="DarkGray"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <!--<DataGridTemplateColumn Header="Zapowiedź">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding CallMade, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>-->
+                <DataGridCheckBoxColumn Header="Zap" Binding="{Binding CallMade}" >
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="IsEditing" Value="True" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Header="SWDR" Binding="{Binding SwdrEntryDone}" >
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="IsEditing" Value="True" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+                <DataGridTextColumn Header="Uwagi eksploatacyjne" Binding="{Binding Notes}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Notatki" Binding="{Binding CustomNotes}" Width="*" MinWidth="100" />
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TrainToRun}" Value="True">
+                            <Setter Property="Foreground" Value="Green" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Arriving}" Value="True">
+                            <Setter Property="Foreground" Value="Blue" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding AllSet}" Value="True">
+                            <Setter Property="Background" Value="LightGray" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+        </DataGrid>
+    </Grid>
+</Window>

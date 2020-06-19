@@ -1,0 +1,11 @@
+[B|b]in
+[O|o]bj
+_ReSharper.*
+*.suo
+*.user
+*.cache
+/Build/
+/Release/
+/packages/*
+.vs/
+
