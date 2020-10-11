@@ -8,17 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SWISDR.Windows
 {
@@ -94,7 +88,8 @@ namespace SWISDR.Windows
             try
             {
                 var appState = new ApplicationState(Entries.Select(vm => vm.Model).ToList());
-                await _appStateService.Save(appState, this);
+                if (await _appStateService.Save(appState, this))
+                    MessageBox.Show("Stan zapisany");
             }
             catch (Exception ex)
             {
@@ -138,6 +133,7 @@ namespace SWISDR.Windows
             _timetable = await _loadTimetable(dialog.FileName).ConfigureAwait(true);
             EntriesGrid.ItemsSource = Entries;
         }
+
         private void AddTrain()
         {
             var dialogWindow = _windowFactory();
@@ -170,6 +166,7 @@ namespace SWISDR.Windows
                 e.Handled = true;
             }
         }
+
         private static T FindVisualParent<T>(UIElement element) where T : UIElement
         {
             var parent = element;

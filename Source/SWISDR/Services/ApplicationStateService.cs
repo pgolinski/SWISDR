@@ -9,12 +9,12 @@ namespace SWISDR.Services
     public interface IApplicationStateService
     {
         Task<ApplicationState> Load(Window parent);
-        Task Save(ApplicationState appState, Window parent, bool forceChooseFile = false);
+        Task<bool> Save(ApplicationState appState, Window parent, bool forceChooseFile = false);
     }
 
     public class ApplicationStateService : IApplicationStateService
     {
-        private const string StateFileExtension = "state";
+        private const string FileDialogFilter = "Plik stanu (*.state)|*.state";
         private readonly Func<string, IApplicationStateWriter> _appStateWriterFactory;
         private readonly Func<string, IApplicationStateReader> _appStateReaderFactory;
 
@@ -28,38 +28,40 @@ namespace SWISDR.Services
             _appStateReaderFactory = appStateReaderFactory;
         }
 
-        public Task<ApplicationState> Load(Window parent)
+        public async Task<ApplicationState> Load(Window parent)
         {
-            var dialog = new OpenFileDialog();
-            dialog.DefaultExt = StateFileExtension;
+            var dialog = new OpenFileDialog
+            {
+                Filter = FileDialogFilter,
+                CheckFileExists = true
+            };
+
             if (dialog.ShowDialog(parent) != true)
-                return Task.FromResult((ApplicationState)null);
+                return null;
 
             _latestPath = dialog.FileName;
-            var reader = _appStateReaderFactory(_latestPath);
-
-            var task = reader.Read();
-            task.ContinueWith(_ => reader.Dispose());
-            return task;
+            using var reader = _appStateReaderFactory(_latestPath);
+            return await reader.Read();
         }
 
-        public Task Save(ApplicationState appState, Window parent, bool forceChooseFile = false)
+        public async Task<bool> Save(ApplicationState appState, Window parent, bool forceChooseFile = false)
         {
             if (_latestPath == null || forceChooseFile)
             {
-                var dialog = new SaveFileDialog();
-                dialog.DefaultExt = StateFileExtension;
+                var dialog = new SaveFileDialog()
+                {
+                    Filter = FileDialogFilter
+                };
+
                 if (dialog.ShowDialog(parent) != true)
-                    return Task.CompletedTask;
+                    return false;
 
                 _latestPath = dialog.FileName;
             }
 
-            var writer = _appStateWriterFactory(_latestPath);
-
-            var task = writer.Write(appState);
-            task.ContinueWith(_ => writer.Dispose());
-            return task;
+            using var writer = _appStateWriterFactory(_latestPath);
+            await writer.Write(appState);
+            return true;
         }
     }
 }
