@@ -32,6 +32,7 @@ namespace SWISDR.Windows
         private readonly Func<TrainNumber> _windowFactory;
         private readonly IApplicationStateService _appStateService;
         private Timetable _timetable;
+        private bool _manualCommitEdit;
         public ObservableCollection<EntryViewModel> Entries { get; set; }
 
         public MainWindow(
@@ -58,8 +59,14 @@ namespace SWISDR.Windows
 
         private void EntriesGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            //e.Row.Item
-            //var element = e.EditingElement;
+            if (e.EditAction == DataGridEditAction.Cancel || _manualCommitEdit)
+                return;
+
+            var datagrid = sender as DataGrid;
+
+            _manualCommitEdit = true;
+            datagrid.CommitEdit(DataGridEditingUnit.Row, true);
+            _manualCommitEdit = false;
         }
 
         private async void LoadStateBtn_Click(object sender, RoutedEventArgs e)
