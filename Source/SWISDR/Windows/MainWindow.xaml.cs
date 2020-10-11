@@ -140,5 +140,40 @@ namespace SWISDR.Windows
 
             AddEntryFor(dialogWindow.Number);
         }
+
+        private void FocusAndSelectCell(object sender, MouseButtonEventArgs e)
+        {
+            var cell = sender as DataGridCell;
+            if (cell == null || cell.IsEditing || cell.IsReadOnly)
+                return;
+            if (!cell.IsFocused)
+                cell.Focus();
+            var dataGrid = FindVisualParent<DataGrid>(cell);
+            if (dataGrid == null)
+                return;
+
+            if (dataGrid.SelectionUnit == DataGridSelectionUnit.FullRow)
+                throw new InvalidOperationException("Full row selection is not supported");
+            
+            if (!cell.IsSelected)
+                cell.IsSelected = true;
+            else
+            {
+                dataGrid.BeginEdit(e);
+                e.Handled = true;
+            }
+        }
+        private static T FindVisualParent<T>(UIElement element) where T : UIElement
+        {
+            var parent = element;
+            while (parent != null)
+            {
+                var correctlyTyped = parent as T;
+                if (correctlyTyped != null)
+                    return correctlyTyped;
+                parent = VisualTreeHelper.GetParent(parent) as UIElement;
+            }
+            return null;
+        }
     }
 }

@@ -12,20 +12,6 @@
     <Window.Resources>
         <Style  TargetType="DataGridCell"  BasedOn="{StaticResource {x:Type DataGridCell}}">
             <Setter Property="TextBlock.TextAlignment" Value="Center" />
-            <!--<Style.Triggers>
-                <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                        <Condition Property="IsReadOnly" Value="False" />
-                        <Condition Property="IsMouseOver" Value="True" />
-                    </MultiTrigger.Conditions>
-                    <Setter Property="IsEditing" Value="True" />
-                </MultiTrigger>
-            </Style.Triggers>-->
-            <!--<Style.Triggers>
-                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Content.Text}" Value="{x:Null}">
-                    <Setter Property="Background" Value="DarkGray" />
-                </DataTrigger>
-            </Style.Triggers>-->
         </Style>
     </Window.Resources>
     <Grid>
@@ -44,6 +30,11 @@
                 <conv:IsNullConverter x:Key="isNullConverter"/>
                 <conv:TimespanConverter x:Key="timespanConverter" />
             </DataGrid.Resources>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="FocusAndSelectCell"/>
+                </Style>
+            </DataGrid.CellStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Numer" Binding="{Binding Number}" IsReadOnly="True" MinWidth="90"/>
                 <DataGridTextColumn Header="Kierunek z" Binding="{Binding From}" IsReadOnly="True" />
@@ -75,35 +66,9 @@
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
-                <!--<DataGridTemplateColumn Header="Zapowiedź">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding CallMade, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
-                <DataGridCheckBoxColumn Header="Zap" Binding="{Binding CallMade}" >
-                    <DataGridCheckBoxColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="IsEditing" Value="True" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridCheckBoxColumn.CellStyle>
-                </DataGridCheckBoxColumn>
-                <DataGridCheckBoxColumn Header="SWDR" Binding="{Binding SwdrEntryDone}" >
-                    <DataGridCheckBoxColumn.CellStyle>
-                        <Style TargetType="DataGridCell">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="IsEditing" Value="True" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGridCheckBoxColumn.CellStyle>
-                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Header="Zap" Binding="{Binding CallMade}" />
+                <DataGridCheckBoxColumn Header="SWDR" Binding="{Binding SwdrEntryDone}" />
+
                 <DataGridTextColumn Header="Uwagi eksploatacyjne" Binding="{Binding Notes}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Notatki" Binding="{Binding CustomNotes}" Width="*" MinWidth="100" />
             </DataGrid.Columns>
