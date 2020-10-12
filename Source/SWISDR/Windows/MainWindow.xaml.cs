@@ -140,7 +140,12 @@ namespace SWISDR.Windows
             if (!dialogWindow.Result)
                 return;
 
-            AddEntryFor(dialogWindow.Number);
+            var number = dialogWindow.Number;
+
+            if (Entries.Any(entry => entry.Number == number))
+                MessageBox.Show($"Pociąg o numerze {number} znajduje się już na liście");
+            else
+                AddEntryFor(dialogWindow.Number);
         }
 
         private void FocusAndSelectCell(object sender, MouseButtonEventArgs e)
