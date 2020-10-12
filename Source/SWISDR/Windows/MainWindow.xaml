@@ -13,6 +13,9 @@
         <Style  TargetType="DataGridCell"  BasedOn="{StaticResource {x:Type DataGridCell}}">
             <Setter Property="TextBlock.TextAlignment" Value="Center" />
         </Style>
+        <ContextMenu x:Key="RowMenu">
+            <MenuItem Header="Usuń" Click="MenuItem_Click" />
+        </ContextMenu>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -74,6 +77,7 @@
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
+                    <Setter Property="ContextMenu" Value="{StaticResource RowMenu}"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding TrainToRun}" Value="True">
                             <Setter Property="Foreground" Value="Green" />

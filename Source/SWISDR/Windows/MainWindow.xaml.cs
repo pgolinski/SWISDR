@@ -183,5 +183,13 @@ namespace SWISDR.Windows
             }
             return null;
         }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = e.Source as MenuItem;
+            var entry = menuItem?.DataContext as EntryViewModel;
+            if (entry != null)
+                Entries.Remove(entry);
+        }
     }
 }
