@@ -14,6 +14,8 @@ namespace SWISDR
             builder.RegisterType<ApplicationStateService>()
                 .AsImplementedInterfaces()
                 .SingleInstance();
+
+            builder.RegisterType<EntriesCollection>();
         }
     }
 }

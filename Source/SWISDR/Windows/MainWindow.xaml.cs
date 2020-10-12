@@ -1,12 +1,10 @@
 ﻿using Microsoft.Win32;
-using SWISDR.Core;
 using SWISDR.Core.ApplicationState;
 using SWISDR.Core.Entries;
 using SWISDR.Core.Timetable;
 using SWISDR.Services;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,14 +25,15 @@ namespace SWISDR.Windows
         private readonly IApplicationStateService _appStateService;
         private Timetable _timetable;
         private bool _manualCommitEdit;
-        public ObservableCollection<EntryViewModel> Entries { get; set; }
+        public EntriesCollection Entries { get; set; }
 
         public MainWindow(
             Func<string, Task<Timetable>> loadTimetableFunc,
             Func<TrainNumber> windowFactory,
+            EntriesCollection entries,
             IApplicationStateService appStateService)
         {
-            Entries = new ObservableCollection<EntryViewModel>();
+            Entries = entries;
             InitializeComponent();
             _loadTimetable = loadTimetableFunc;
             _windowFactory = windowFactory;

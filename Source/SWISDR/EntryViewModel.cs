@@ -3,8 +3,9 @@ using SWISDR.Core.Timetable;
 using System;
 using System.ComponentModel;
 
-namespace SWISDR.Core
+namespace SWISDR
 {
+
     public class EntryViewModel : INotifyPropertyChanged
     {
         private readonly TimetableRecord _record;
