@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
@@ -7,6 +8,12 @@ namespace SWISDR
     public class EntriesCollection : ObservableCollection<EntryViewModel>
     {
         private const int NotFound = -1;
+
+        public TimeSpan? FindCurrentTime()
+        {
+            var last = this.Last(entry => entry.RealDeparture != null || entry.RealArrival != null);
+            return last.RealDeparture ?? last.RealArrival ?? null;
+        }
 
         protected override void InsertItem(int index, EntryViewModel item)
         {

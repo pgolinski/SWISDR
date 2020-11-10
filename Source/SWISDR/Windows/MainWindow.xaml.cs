@@ -142,10 +142,28 @@ namespace SWISDR.Windows
 
             var number = dialogWindow.Number;
 
-            if (Entries.Any(entry => entry.Number == number))
+            var existing = Entries.FirstOrDefault(entry => entry.Number == number);
+            if (existing == null)
+            {
+                AddEntryFor(number);
+                return;
+            }
+
+            var currentTime = Entries.FindCurrentTime();
+            var existingTime = existing.RealDeparture ?? existing.RealArrival;
+            var difference = currentTime - existingTime ?? TimeSpan.Zero;
+            if (difference < TimeSpan.Zero)
+                difference = TimeSpan.FromDays(1) - difference.Duration();
+
+            if (existingTime == null || difference < TimeSpan.FromHours(6))
+            {
                 MessageBox.Show($"Pociąg o numerze {number} znajduje się już na liście");
+            }
             else
+            {
+                Entries.Remove(existing);
                 AddEntryFor(dialogWindow.Number);
+            }
         }
 
         private void FocusAndSelectCell(object sender, MouseButtonEventArgs e)
