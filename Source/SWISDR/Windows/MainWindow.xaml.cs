@@ -157,13 +157,14 @@ namespace SWISDR.Windows
 
             if (existingTime == null || difference < TimeSpan.FromHours(6))
             {
-                MessageBox.Show($"Pociąg o numerze {number} znajduje się już na liście");
+                var result = MessageBox.Show($"Pociąg {number} znajduje się już na liście - zastąpić?", "Potwierdzenie", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.No)
+                    return;
             }
-            else
-            {
-                Entries.Remove(existing);
-                AddEntryFor(dialogWindow.Number);
-            }
+            
+            Entries.Remove(existing);
+            AddEntryFor(dialogWindow.Number);
+            
         }
 
         private void FocusAndSelectCell(object sender, MouseButtonEventArgs e)
