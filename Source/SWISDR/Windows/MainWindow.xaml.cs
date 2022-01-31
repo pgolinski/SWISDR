@@ -21,7 +21,7 @@ namespace SWISDR.Windows
     {
         private readonly Func<string, Task<Timetable>> _loadTimetable;
 
-        private readonly Func<TrainNumber> _windowFactory;
+        private readonly Func<TrainNumberWindow> _trainNumberWindowFunc;
         private readonly IApplicationStateService _appStateService;
         private Timetable _timetable;
         private bool _manualCommitEdit;
@@ -29,14 +29,14 @@ namespace SWISDR.Windows
 
         public MainWindow(
             Func<string, Task<Timetable>> loadTimetableFunc,
-            Func<TrainNumber> windowFactory,
+            Func<TrainNumberWindow> trainNumberWindowFunc,
             EntriesCollection entries,
             IApplicationStateService appStateService)
         {
             Entries = entries;
             InitializeComponent();
             _loadTimetable = loadTimetableFunc;
-            _windowFactory = windowFactory;
+            _trainNumberWindowFunc = trainNumberWindowFunc;
             _appStateService = appStateService;
         }
         
@@ -135,7 +135,7 @@ namespace SWISDR.Windows
 
         private void AddTrain()
         {
-            var dialogWindow = _windowFactory();
+            var dialogWindow = _trainNumberWindowFunc();
             _ = dialogWindow.ShowDialog();
             if (!dialogWindow.Result)
                 return;
@@ -164,7 +164,6 @@ namespace SWISDR.Windows
             
             Entries.Remove(existing);
             AddEntryFor(dialogWindow.Number);
-            
         }
 
         private void FocusAndSelectCell(object sender, MouseButtonEventArgs e)

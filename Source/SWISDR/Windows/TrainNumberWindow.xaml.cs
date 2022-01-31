@@ -15,11 +15,11 @@ namespace SWISDR.Windows
     /// <summary>
     /// Interaction logic for TrainNumber.xaml
     /// </summary>
-    public partial class TrainNumber : Window
+    public partial class TrainNumberWindow : Window
     {
         public int Number { get; private set; }
         public bool Result { get; private set; }
-        public TrainNumber()
+        public TrainNumberWindow()
         {
             InitializeComponent();
         }
