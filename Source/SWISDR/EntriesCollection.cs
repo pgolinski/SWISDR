@@ -54,7 +54,7 @@ namespace SWISDR
         private int GetProperIndex(int index, EntryViewModel entryViewModel)
         {
             if (!entryViewModel.AllSet)
-                return SortByDepartureTime(index, entryViewModel);
+                return GetIndexByDepartureTime(index, entryViewModel);
 
             var notFinishedIndex = FindFirstNotFinishedIndex();
             if (notFinishedIndex == NotFound)
@@ -63,14 +63,20 @@ namespace SWISDR
                 return notFinishedIndex;
         }
 
-        private int SortByDepartureTime(int index, EntryViewModel entryViewModel)
+        private int GetIndexByDepartureTime(int index, EntryViewModel entryViewModel)
         {
-            var item = Items.FirstOrDefault(item => !item.AllSet && item.Departure > entryViewModel.Departure);
+            
+            if (entryViewModel.Arrival == null && entryViewModel.Departure == null)
+                return index; //it should not occur
+
+            var item = Items.FirstOrDefault(item =>
+                                !item.AllSet && item.GetLastActivityTime() > entryViewModel.GetLastActivityTime());
+
             if (item == null)
                 return index;
 
             var newIndex = IndexOf(item);
-            if (item != null && newIndex < index)
+            if (newIndex < index)
                 return newIndex;
             else
                 return index;

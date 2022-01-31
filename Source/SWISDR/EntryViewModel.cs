@@ -86,13 +86,6 @@ namespace SWISDR
         public bool Arriving => Arrival != null && RealArrival == null;
         public bool AllSet => (RealDeparture != null || Departure == null && RealArrival != null) && CallMade && SwdrEntryDone;
 
-
-        public EntryViewModel(TimetableRecord record, Entry entry)
-        {
-            _record = record;
-            _entry = entry;
-        }
-
         public Entry Model => new Entry
         {
             Number = _entry.Number,
@@ -103,9 +96,13 @@ namespace SWISDR
             SwdrEntryDone = _entry.SwdrEntryDone
         };
 
-        private void NotifyPropertyChanged(string name)
+        public EntryViewModel(TimetableRecord record, Entry entry)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+            _record = record;
+            _entry = entry;
         }
+
+        public TimeSpan? GetLastActivityTime() => Departure ?? Arrival;
+        private void NotifyPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
